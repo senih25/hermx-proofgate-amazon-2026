@@ -1,13 +1,1 @@
-[project]
-name = "hermx-proofgate"
-version = "0.1.0"
-description = "Approval-gated Streamable HTTP MCP demo for Alexa+"
-requires-python = ">=3.11"
-dependencies = ["mcp==1.27.2"]
-
-[project.optional-dependencies]
-dev = ["pytest>=8,<10"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["."]
+[project]`nname = "hermx-proofgate"`nversion = "0.1.0"`ndescription = "Approval-gated Streamable HTTP MCP demo for Alexa+"`nrequires-python = ">=3.11"`ndependencies = ["mcp==1.27.2"]`n`n[project.optional-dependencies]`ndev = ["pytest>=8,<10"]`n`n[tool.setuptools]`npy-modules = ["server", "proofgate_core"]`n`n[tool.pytest.ini_options]`ntestpaths = ["tests"]`npythonpath = ["."]`n
