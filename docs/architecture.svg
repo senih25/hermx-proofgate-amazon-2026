@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="Atkinson Hyperlegible, Segoe UI, sans-serif">
+  <title>Recall with HERMX ProofGate: architecture</title>
+  <rect width="960" height="470" fill="#e6ecf1"/>
+  <text x="36" y="48" font-family="Newsreader, Georgia, serif" font-size="26" font-weight="650" fill="#172336">Recall, guarded by HERMX ProofGate</text>
+  <text x="36" y="74" font-size="14" fill="#56657a">One MCP tool contract, two runtimes. Routine reviews run directly; deck changes pass the gate.</text>
+
+  <!-- clients -->
+  <g>
+    <rect x="36" y="108" width="210" height="96" rx="12" fill="#fffefa"/>
+    <circle cx="70" cy="140" r="14" fill="none" stroke="#19a9e0" stroke-width="6"/>
+    <text x="94" y="145" font-size="16" font-weight="700" fill="#172336">Alexa+ / MCP client</text>
+    <text x="54" y="176" font-size="13" fill="#56657a">voice intent → tool calls,</text>
+    <text x="54" y="194" font-size="13" fill="#56657a">reads each tool's "say" aloud</text>
+  </g>
+  <g>
+    <rect x="36" y="228" width="210" height="96" rx="12" fill="#fffefa"/>
+    <text x="54" y="262" font-size="16" font-weight="700" fill="#172336">Web simulator</text>
+    <text x="54" y="286" font-size="13" fill="#56657a">Web Speech in/out; the page</text>
+    <text x="54" y="304" font-size="13" fill="#56657a">is itself an MCP client</text>
+  </g>
+  <g>
+    <rect x="36" y="348" width="210" height="84" rx="12" fill="#fffefa"/>
+    <text x="54" y="380" font-size="16" font-weight="700" fill="#172336">demo_flow.py</text>
+    <text x="54" y="404" font-size="13" fill="#56657a">official MCP Python client,</text>
+    <text x="54" y="421" font-size="13" fill="#56657a">12-check conformance run</text>
+  </g>
+
+  <!-- transport -->
+  <g stroke="#56657a" stroke-width="2" fill="none">
+    <path d="M246 156 H300 V270"/><path d="M246 276 H330"/><path d="M246 390 H300 V282"/>
+  </g>
+  <rect x="330" y="236" width="126" height="80" rx="10" fill="#172336"/>
+  <text x="393" y="266" text-anchor="middle" font-size="14" font-weight="700" fill="#fffefa">POST /mcp</text>
+  <text x="393" y="286" text-anchor="middle" font-size="12" fill="#b8c7d8">Streamable HTTP</text>
+  <text x="393" y="303" text-anchor="middle" font-size="12" fill="#b8c7d8">MCP 2025-11-25</text>
+  <path d="M456 276 H500" stroke="#56657a" stroke-width="2"/>
+
+  <!-- runtimes -->
+  <rect x="500" y="108" width="424" height="324" rx="14" fill="#fffefa"/>
+  <text x="522" y="140" font-size="16" font-weight="700" fill="#172336">Same contract, two runtimes (parity-tested)</text>
+  <rect x="522" y="156" width="184" height="54" rx="8" fill="#eef2f6"/>
+  <text x="536" y="179" font-size="13.5" font-weight="700" fill="#172336">Python reference</text>
+  <text x="536" y="198" font-size="12" fill="#56657a">FastMCP, mcp==1.28.1</text>
+  <rect x="718" y="156" width="184" height="54" rx="8" fill="#eef2f6"/>
+  <text x="732" y="179" font-size="13.5" font-weight="700" fill="#172336">Live demo</text>
+  <text x="732" y="198" font-size="12" fill="#56657a">Cloudflare Worker + DO</text>
+
+  <!-- tiers -->
+  <rect x="522" y="226" width="184" height="186" rx="8" fill="#e7f5fb"/>
+  <text x="536" y="250" font-size="14" font-weight="700" fill="#0d4f70">Routine, instant</text>
+  <text x="536" y="274" font-size="13" fill="#172336">next_review</text>
+  <text x="536" y="294" font-size="13" fill="#172336">grade_answer (SM-2)</text>
+  <text x="536" y="314" font-size="13" fill="#172336">progress</text>
+  <text x="536" y="346" font-size="12" fill="#56657a">no approval needed,</text>
+  <text x="536" y="363" font-size="12" fill="#56657a">but every effect extends</text>
+  <text x="536" y="380" font-size="12" fill="#56657a">the SHA-256 audit chain</text>
+
+  <rect x="718" y="226" width="184" height="186" rx="8" fill="#fdf3e2"/>
+  <text x="732" y="250" font-size="14" font-weight="700" fill="#8a560d">Consequential, gated</text>
+  <text x="732" y="274" font-size="13" fill="#172336">import_deck</text>
+  <text x="732" y="294" font-size="13" fill="#172336">reset_topic · delete_topic</text>
+  <g font-size="12" font-weight="700">
+    <rect x="732" y="312" width="72" height="24" rx="5" fill="#fffefa"/><text x="768" y="329" text-anchor="middle" fill="#172336">plan</text>
+    <rect x="814" y="312" width="72" height="24" rx="5" fill="#fffefa"/><text x="850" y="329" text-anchor="middle" fill="#172336">approve</text>
+    <rect x="732" y="344" width="72" height="24" rx="5" fill="#fffefa"/><text x="768" y="361" text-anchor="middle" fill="#172336">execute</text>
+    <rect x="814" y="344" width="72" height="24" rx="5" fill="#fffefa"/><text x="850" y="361" text-anchor="middle" fill="#1d7a52">verify</text>
+  </g>
+  <text x="732" y="392" font-size="12" fill="#56657a">exact phrase; drift check</text>
+  <text x="732" y="408" font-size="12" fill="#56657a">against the plan's digest</text>
+</svg>

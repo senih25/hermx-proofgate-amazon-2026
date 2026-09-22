@@ -1,84 +1,87 @@
-# HERMX ProofGate
+# Recall, guarded by HERMX ProofGate
 
-**Approval-gated actions for Alexa+ over Streamable HTTP MCP.**
+**A voice study coach for Alexa+ where routine reviews run instantly and anything that changes a deck waits for your exact approval.**
 
-ProofGate is a clean-room hackathon demo built for the **Build, Ship, Shape: Amazon Developer Hackathon**. It demonstrates a safety-first agentic workflow without publishing HERMX commercial internals.
+- **Live demo (free, no sign-in):** https://hermx-proofgate-recall.senih-bayankulu25.workers.dev
+- **Live MCP endpoint:** `https://hermx-proofgate-recall.senih-bayankulu25.workers.dev/mcp` (Streamable HTTP, protocol `2025-11-25`)
+- **Demo video:** see the Devpost project page
+- Built for **Build, Ship, Shape: Amazon Developer Hackathon**, Alexa+ track, and released under MIT (Open Source mini challenge).
 
-## What it demonstrates
+![Architecture](docs/architecture.svg)
 
-An assistant cannot jump directly from intent to effect. Every change follows:
+## The idea
 
-`plan → explicit approval → drift-safe execution → cryptographic verification`
+Voice assistants are becoming agents: they don't just answer, they change things. Most changes are small and reversible, and asking for confirmation on every one would make a voice product unbearable. A few changes are consequential, and an agent must never treat "yeah, go ahead" as authorization for those.
 
-The public demo exposes five MCP tools:
+Recall is a hands-free spaced-repetition coach that makes this split explicit:
 
-- `proofgate_status`
-- `plan_change`
-- `approve_change`
-- `execute_change`
-- `verify_change`
+| Tier | Tools | Rule |
+| --- | --- | --- |
+| Routine | `next_review`, `grade_answer`, `progress` | Runs immediately. Every effect still extends a SHA-256 audit chain. |
+| Consequential | `plan_change` → `approve_change` → `execute_change` → `verify_change` for `import_deck`, `reset_topic`, `delete_topic` | Nothing happens until the user says the plan's exact phrase, for example "approve 7 F 3 A 9 C". Execution re-checks the topic's digest and fails closed if it changed after planning. Verification compares the result with the digest predicted at plan time. |
 
-The effect surface is intentionally bounded to two sandbox settings. No shell, customer data, credential path, production API, provider registry, routing logic, tunnel configuration, or proprietary adapter is included.
+`proofgate_status` exposes the contract, the audit-chain head and the current state digest.
 
-## Why this matters for Alexa+
+## What happens in a session
 
-Voice and conversational agents become more useful when they can take actions, but higher agency also increases the cost of an incorrect action. ProofGate turns approval and verification into protocol-visible steps rather than hidden application behavior.
+1. "Learn this as mcp" creates a **plan**: Recall reads the text, builds cloze flashcards, and predicts the topic's SHA-256 digest after the import. Nothing is written yet.
+2. "Yes, go ahead" is rejected (`APPROVAL_MISMATCH`), and the rejection is logged.
+3. "Approve 7 F 3 A 9 C" approves that one plan. Recall re-checks the topic, imports, then **verifies** the result against the predicted digest.
+4. "Quiz me" and spoken answers are graded (SM-2 scheduling) without confirmation prompts.
+5. If a deck changes between planning and execution (for example, you review a card after asking for a reset), the old approval is refused with `STATE_DRIFT`.
 
-A typical interaction is:
+## Repository
 
-1. Alexa+ asks ProofGate to plan a bounded change.
-2. ProofGate returns the before/after state and an exact approval phrase.
-3. The user explicitly approves that exact plan.
-4. ProofGate re-checks preconditions before execution.
-5. ProofGate verifies the result and returns a SHA-256 evidence digest.
+| Path | What it is |
+| --- | --- |
+| `server.py` | Python reference MCP server (official MCP Python SDK 1.28.1, FastMCP), Streamable HTTP at `/mcp`, and the simulator UI at `/` |
+| `proofgate_core.py` | The gate: risk tiers, plan-bound approval, drift check, verification, hash-chained audit |
+| `learning.py`, `srs.py` | Deterministic cloze-card extraction, spoken-answer grading, SM-2 scheduling |
+| `worker/` | Cloudflare Worker port used for the free live demo (Durable Object sandbox per visitor) |
+| `web/` | Alexa+ experience simulator; the page itself is an MCP client of `/mcp` |
+| `demo_flow.py` | 12-check conformance run using the official MCP Python client |
+| `tests/` | Safety and effect-boundary tests, plus a Python/JavaScript parity test |
+
+Card extraction is deterministic (no LLM, no network), which is what lets the server predict the post-change digest at plan time.
 
 ## Run locally
 
-Requirements: Python 3.11+.
+Requirements: Python 3.11+, optionally Node.js for the parity test.
 
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -e .
-python server.py
+# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+pip install -e ".[dev]"
+python server.py            # MCP at http://127.0.0.1:8767/mcp, simulator at http://127.0.0.1:8767/
 ```
 
-The Streamable HTTP endpoint is:
-
-`http://127.0.0.1:8767/mcp`
-
-The project pins `mcp==1.28.1` and uses Streamable HTTP with JSON responses and stateless HTTP sessions.
-
-## Test
+Verify:
 
 ```bash
-pip install -e ".[dev]"
-pytest -q
+pytest -q                                              # 16 tests
+python demo_flow.py                                    # against the local server
+python demo_flow.py --url "https://hermx-proofgate-recall.senih-bayankulu25.workers.dev/mcp?sandbox=my-test"
 ```
 
-The tests prove that execution is blocked without approval, approval phrases must match exactly, state drift blocks stale plans, allowlists constrain the effect surface, and successful execution produces verifiable evidence.
+Any MCP client works; for example, point the MCP Inspector at the live `/mcp` URL with the Streamable HTTP transport. Add `?sandbox=<name>` to get your own isolated state.
+
+## Deploy your own live demo (Cloudflare free plan)
+
+```bash
+cd worker
+npx wrangler deploy
+```
+
+The Worker serves `web/` as static assets and handles `/mcp` itself: stateless JSON-RPC over Streamable HTTP (JSON response mode, no server-initiated SSE), one SQLite-backed Durable Object per sandbox.
+
+## What is and isn't claimed
+
+- Claimed and verified: a self-hosted MCP server on protocol `2025-11-25` over Streamable HTTP, discoverable tools, the gate behaviour above, and the same behaviour on the live Worker (see [EVIDENCE.md](EVIDENCE.md)).
+- Not claimed: a completed connection inside the production Alexa+ app. The simulator stands in for Alexa+'s voice layer, which the track explicitly allows.
+- Not entered: the AWS Builder mini challenge. This build uses no AWS services.
 
 ## Commercial boundary
 
-This repository is intentionally standalone. It reimplements only the public safety pattern needed for the hackathon demo. It does **not** contain or depend on the proprietary HERMX control plane.
+Clean-room code written during the hackathon. It contains no HERMX commercial control-plane source, credentials, customer data, private provider mappings or deployment secrets. See [SECURITY.md](SECURITY.md).
 
-See [SECURITY.md](SECURITY.md) for the disclosure boundary and [DEVPOST_SUBMISSION.md](DEVPOST_SUBMISSION.md) for the submission copy.
-
-## Alexa+ simulation UI
-
-ProofGate includes a small browser experience that runs the real MCP flow for judging and demo capture.
-
-Start the MCP server:
-
-```bash
-python server.py
-```
-
-In a second terminal:
-
-```bash
-python demo_web.py
-```
-
-Open `http://127.0.0.1:8770/` and click **Run live MCP flow**. The page executes `demo_flow.py` against the live `/mcp` endpoint and displays initialization, fail-closed approval blocking, execution, and SHA-256 verification evidence.
+The learning-coach half began as a separate prototype, [senih25/recall-alexa-mcp](https://github.com/senih25/recall-alexa-mcp), and was merged here so the submission is one product.

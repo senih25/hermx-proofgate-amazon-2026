@@ -1,7 +1,7 @@
 [project]
 name = "hermx-proofgate"
-version = "0.1.1"
-description = "Approval-gated Streamable HTTP MCP demo for Alexa+"
+version = "0.2.0"
+description = "Recall: a voice study coach for Alexa+ with approval-gated effects over Streamable HTTP MCP"
 requires-python = ">=3.11"
 dependencies = ["mcp==1.28.1"]
 
@@ -9,7 +9,7 @@ dependencies = ["mcp==1.28.1"]
 dev = ["pytest>=8,<10"]
 
 [tool.setuptools]
-py-modules = ["server", "proofgate_core"]
+py-modules = ["server", "proofgate_core", "learning", "srs", "demo_flow"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

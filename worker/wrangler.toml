@@ -1,0 +1,17 @@
+name = "hermx-proofgate-recall"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[assets]
+directory = "../web"
+binding = "ASSETS"
+
+[[durable_objects.bindings]]
+name = "SANDBOX"
+class_name = "Sandbox"
+
+# SQLite-backed Durable Objects are available on the Workers Free plan.
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Sandbox"]

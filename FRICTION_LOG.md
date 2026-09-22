@@ -93,3 +93,59 @@ py-modules = ["server", "proofgate_core"]
 **Workaround:** Initially kept `mcp==1.27.2` pinned for the reproducible `v0.1.0` checkpoint. When GitHub later surfaced a high-severity advisory with `1.28.1` as the first patched release, we upgraded to `mcp==1.28.1` and re-ran the full test and live Streamable HTTP verification flow before accepting the change.
 
 **Actionable suggestion:** Provide a compatibility table that maps MCP SDK releases to supported protocol revisions and migration notes, making upgrade decisions easier during judged/reproducible builds.
+
+---
+
+## 5. No free, obvious home for a public Python MCP server
+
+**Task attempted:** Give judges a free, always-on live endpoint for the Python MCP server.
+
+**Steps taken:**
+1. Looked for a free host that runs the official Python SDK server (Starlette/uvicorn) without sleeping or a credit card.
+2. Considered Python on Cloudflare Workers; the SDK's dependency tree (pydantic, starlette, anyio) made that a risky bet for a judged deadline.
+3. Ported the tool contract to a Cloudflare Worker in JavaScript instead, with one Durable Object per sandbox.
+
+**Expected:** A documented, free path to host the reference Python server publicly for judging.
+
+**Actual:** Two implementations of one contract, which creates a divergence risk.
+
+**Severity:** Medium: extra work and a real chance of the live demo drifting from the reference.
+
+**Workaround:** Kept the algorithms deterministic and added `tests/test_parity.py`, which runs the JavaScript extractor and grader and compares results with Python. `demo_flow.py --url` runs the same 12 MCP checks against both runtimes.
+
+**Actionable suggestion:** Publish a hackathon hosting recipe (or credits) for self-hosted Streamable HTTP MCP servers in Python, and a conformance harness that any endpoint URL can be run through.
+
+---
+
+## 6. Stateless Streamable HTTP details are easy to get subtly wrong
+
+**Task attempted:** Implement Streamable HTTP by hand in the Worker so the official Python client can connect.
+
+**Steps taken:**
+1. Answered `initialize` with JSON (not SSE), negotiated `2025-11-25`, and issued no session id.
+2. Returned `202` for notifications and `405` for `GET /mcp`, since the server never pushes messages.
+3. Validated `MCP-Protocol-Version` on later requests.
+
+**Expected:** A short checklist of exactly what a stateless, JSON-only server must implement.
+
+**Actual:** The rules are spread across the transport, lifecycle and versioning pages; working out which parts are optional for a JSON-only stateless server took trial runs with the official client.
+
+**Severity:** Low: resolved in under an hour, with conformance checks to prove it.
+
+**Workaround:** Ran the official MCP Python client's full flow against the Worker, locally (`wrangler dev`) and live, before trusting it.
+
+**Actionable suggestion:** A "minimal stateless Streamable HTTP server" checklist in the spec, with the exact status codes and headers expected.
+
+---
+
+## 7. Voice approval versus exact approval
+
+**Task attempted:** Keep approval exact (plan-bound) while making it speakable.
+
+**Actual:** Speech recognition returns "approve 7 f 3 a 9 c", "Approve 7F3A9C" or "approve 7 F 3A 9C" for the same intent. A strict string match would reject genuine approvals.
+
+**Severity:** Medium for voice UX.
+
+**Workaround:** Approval phrases are compared after removing whitespace and case, but they stay bound to one plan id: a phrase for another plan, or "yes, go ahead", is still rejected and logged. Covered by `test_spelled_out_voice_approval_matches` and `test_exact_plan_bound_approval_is_required`.
+
+**Actionable suggestion:** Alexa+ guidance for confirmation patterns on consequential MCP tool calls (for example, a platform-level spoken confirmation with a plan-bound code) would let skills stop reinventing this.
