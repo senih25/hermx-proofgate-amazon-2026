@@ -64,3 +64,21 @@ The tests prove that execution is blocked without approval, approval phrases mus
 This repository is intentionally standalone. It reimplements only the public safety pattern needed for the hackathon demo. It does **not** contain or depend on the proprietary HERMX control plane.
 
 See [SECURITY.md](SECURITY.md) for the disclosure boundary and [DEVPOST_SUBMISSION.md](DEVPOST_SUBMISSION.md) for the submission copy.
+
+## Alexa+ simulation UI
+
+ProofGate includes a small browser experience that runs the real MCP flow for judging and demo capture.
+
+Start the MCP server:
+
+```bash
+python server.py
+```
+
+In a second terminal:
+
+```bash
+python demo_web.py
+```
+
+Open `http://127.0.0.1:8770/` and click **Run live MCP flow**. The page executes `demo_flow.py` against the live `/mcp` endpoint and displays initialization, fail-closed approval blocking, execution, and SHA-256 verification evidence.

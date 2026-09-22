@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="google" content="notranslate">
+  <title>HERMX ProofGate — Alexa+ MCP Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">BUILD • SHIP • SHAPE</p>
+      <h1>HERMX <span>ProofGate</span></h1>
+      <p class="lede">Approval-gated actions for Alexa+ over a clean-room Streamable HTTP MCP.</p>
+      <div class="flow" aria-label="ProofGate workflow">
+        <span>PLAN</span><b>→</b><span>APPROVE</span><b>→</b><span>EXECUTE</span><b>→</b><span>VERIFY</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <p class="label">PUBLIC ARCHITECTURE</p>
+        <h2>Small surface. Explicit effects.</h2>
+        <div class="architecture">
+          <span>MCP Client</span><b>→</b><span>/mcp</span><b>→</b><span>ProofGate</span><b>→</b><span>Sandbox</span>
+        </div>
+        <ul>
+          <li>Streamable HTTP</li>
+          <li>MCP protocol 2025-11-25</li>
+          <li>Plan-bound approval</li>
+          <li>State-drift protection</li>
+          <li>SHA-256 verification evidence</li>
+        </ul>
+      </article>
+
+      <article class="card live">
+        <div class="statusline">
+          <p class="label">LIVE MCP VERIFICATION</p>
+          <span id="state" class="pill idle">READY</span>
+        </div>
+        <h2>Run the real end-to-end flow.</h2>
+        <p class="muted">This button calls the repository's real <code>demo_flow.py</code> against the live local MCP endpoint.</p>
+        <button id="run">Run live MCP flow</button>
+        <pre id="output">Waiting for demo…</pre>
+      </article>
+    </section>
+
+    <section class="boundary">
+      <p><strong>Public-safe boundary:</strong> no production credentials, customer data, private providers, tunnel configuration, or proprietary HERMX control-plane source.</p>
+      <a href="https://github.com/senih25/hermx-proofgate-amazon-2026" target="_blank" rel="noreferrer">Open source repository ↗</a>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
