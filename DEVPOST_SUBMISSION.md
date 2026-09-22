@@ -10,6 +10,7 @@ A voice study coach for Alexa+ that reviews instantly and never changes your dec
 - Live demo: https://hermx-proofgate-recall.senih-bayankulu25.workers.dev
 - Live MCP endpoint: https://hermx-proofgate-recall.senih-bayankulu25.workers.dev/mcp
 - Repository: https://github.com/senih25/hermx-proofgate-amazon-2026
+- Demo video: https://youtu.be/nxf7_ZA5bQo
 
 ## About the project (Devpost story, Markdown)
 

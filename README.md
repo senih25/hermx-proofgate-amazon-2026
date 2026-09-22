@@ -4,7 +4,8 @@
 
 - **Live demo (free, no sign-in):** https://hermx-proofgate-recall.senih-bayankulu25.workers.dev
 - **Live MCP endpoint:** `https://hermx-proofgate-recall.senih-bayankulu25.workers.dev/mcp` (Streamable HTTP, protocol `2025-11-25`)
-- **Demo video:** see the Devpost project page
+- **Demo video (1:55):** https://youtu.be/nxf7_ZA5bQo
+- **Devpost:** https://devpost.com/software/hermx-proofgate
 - Built for **Build, Ship, Shape: Amazon Developer Hackathon**, Alexa+ track, and released under MIT (Open Source mini challenge).
 
 ![Architecture](docs/architecture.svg)
