@@ -26,6 +26,32 @@ def error_text(result) -> str:
     return "\n".join(getattr(item, "text", "") for item in getattr(result, "content", []))
 
 
+async def plan_real_transition(session: ClientSession) -> dict:
+    first = payload(
+        await session.call_tool(
+            "plan_change",
+            {
+                "key": "release_channel",
+                "value": "canary",
+                "reason": "Alexa+ hackathon live demonstration",
+            },
+        )
+    )
+    if first["before"] != first["after"]:
+        return first
+
+    return payload(
+        await session.call_tool(
+            "plan_change",
+            {
+                "key": "release_channel",
+                "value": "stable",
+                "reason": "Alexa+ hackathon live demonstration",
+            },
+        )
+    )
+
+
 async def main() -> None:
     print("HERMX ProofGate — live MCP demo")
     print(f"Connecting to {MCP_URL} ...")
@@ -38,15 +64,7 @@ async def main() -> None:
             listed = await session.list_tools()
             print("TOOLS = " + ", ".join(tool.name for tool in listed.tools))
 
-            plan_result = await session.call_tool(
-                "plan_change",
-                {
-                    "key": "feature_mode",
-                    "value": "demo",
-                    "reason": "Alexa+ hackathon live demonstration",
-                },
-            )
-            plan = payload(plan_result)
+            plan = await plan_real_transition(session)
             plan_id = plan["plan_id"]
             approval_phrase = plan["approval_phrase"]
             print(f"PLAN = PASS | {plan['before']} -> {plan['after']} | id={plan_id}")
