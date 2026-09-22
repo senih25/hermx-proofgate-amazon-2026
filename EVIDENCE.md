@@ -8,6 +8,7 @@ Verified on 2026-09-22 against the public clean-room repository.
 - Commercial HERMX source copied: NO
 - Current-tree secret pattern scan: PASS (0 matches)
 - Core tests: PASS (5/5)
+- MCP Python SDK: `1.28.1`
 - GitHub Actions CI: PASS
 
 ## MCP transport gate
@@ -32,7 +33,7 @@ The MCP client executed the public demo workflow:
 - APPROVE: PASS
 - EXECUTE: PASS
 - VERIFY: PASS
-- Verification digest: `8885871e70a434e945468b0a5284809813e986e3b63dacf479954a1c8ed94df8`
+- Verification digest: `8b34a1112e421bfe2031fb13f57997240e103385175cdbb4a76db83536a036b4`
 
 The digest is generated from the resulting sandbox state. It is demonstration evidence, not a credential or secret.
 

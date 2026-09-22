@@ -48,7 +48,7 @@ The Streamable HTTP endpoint is:
 
 `http://127.0.0.1:8767/mcp`
 
-The project pins `mcp==1.27.2` and uses Streamable HTTP with JSON responses and stateless HTTP sessions.
+The project pins `mcp==1.28.1` and uses Streamable HTTP with JSON responses and stateless HTTP sessions.
 
 ## Test
 

@@ -1,9 +1,9 @@
 [project]
 name = "hermx-proofgate"
-version = "0.1.0"
+version = "0.1.1"
 description = "Approval-gated Streamable HTTP MCP demo for Alexa+"
 requires-python = ">=3.11"
-dependencies = ["mcp==1.27.2"]
+dependencies = ["mcp==1.28.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]

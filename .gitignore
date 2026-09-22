@@ -6,3 +6,4 @@ __pycache__/
 *.log
 runtime/*.json
 !runtime/.gitkeep
+*.egg-info/

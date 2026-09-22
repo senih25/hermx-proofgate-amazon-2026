@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1 — 2026-09-22
+
+- added a browser-based Alexa+ simulation UI that executes the real MCP E2E flow;
+- added public-safe architecture and live verification output for demo capture;
+- upgraded the MCP Python SDK to `1.28.1`, the first patched release for the surfaced high-severity advisory;
+- re-ran 5/5 tests and the Streamable HTTP plan → block → approve → execute → verify flow successfully.
+
 ## 0.1.0 — 2026-09-22
 
 Hackathon-period clean-room implementation:

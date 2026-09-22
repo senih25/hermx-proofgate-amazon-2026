@@ -90,6 +90,6 @@ py-modules = ["server", "proofgate_core"]
 
 **Severity:** Low.
 
-**Workaround:** Kept `mcp==1.27.2` pinned for the reproducible `v0.1.0` checkpoint and closed the unverified upgrade PR. Future upgrades can be evaluated on a separate branch.
+**Workaround:** Initially kept `mcp==1.27.2` pinned for the reproducible `v0.1.0` checkpoint. When GitHub later surfaced a high-severity advisory with `1.28.1` as the first patched release, we upgraded to `mcp==1.28.1` and re-ran the full test and live Streamable HTTP verification flow before accepting the change.
 
 **Actionable suggestion:** Provide a compatibility table that maps MCP SDK releases to supported protocol revisions and migration notes, making upgrade decisions easier during judged/reproducible builds.

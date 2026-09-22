@@ -13,7 +13,7 @@ Conversational agents are increasingly capable of taking real actions. The hard 
 ProofGate is a self-hosted Streamable HTTP MCP server designed for an Alexa+ action workflow. It exposes a deliberately small action surface where every effect must pass four visible stages: plan, exact user approval, drift-safe execution, and verification. Successful verification returns a SHA-256 digest as compact evidence of the resulting sandbox state.
 
 ## How we built it
-The public competition repository is a clean-room Python implementation using the official MCP Python SDK (`mcp==1.27.2`). The server exposes five tools over `/mcp`. A pure-Python state engine persists only sandbox data under the repository runtime directory, enforces an allowlist, checks preconditions immediately before execution, and records a minimal audit trail.
+The public competition repository is a clean-room Python implementation using the official MCP Python SDK (`mcp==1.28.1`). The server exposes five tools over `/mcp`. A pure-Python state engine persists only sandbox data under the repository runtime directory, enforces an allowlist, checks preconditions immediately before execution, and records a minimal audit trail.
 
 ## Challenges
 The main design challenge was increasing agent capability without turning a conversational request into implicit authorization. We separated intent from effect, made approval exact and plan-bound, and added a drift check so approval cannot be reused after the underlying state changes.
