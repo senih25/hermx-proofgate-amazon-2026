@@ -17,6 +17,7 @@ const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: t
 const routineEffect = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 const consequentialPlan = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 const consequentialExecute = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
+const auditWrite = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
 
 const TOOLS = [
   ["proofgate_status", "Service status, safety contract, audit-chain head and state digest.", {}, [], readOnly],
@@ -34,7 +35,7 @@ const TOOLS = [
   ["approve_change", 'Approve one exact plan with its plan-bound phrase, e.g. "APPROVE 7F3A9C".',
     { plan_id: str("Plan id"), approval_phrase: str("Exact approval phrase") }, ["plan_id", "approval_phrase"], consequentialPlan],
   ["execute_change", "Execute an approved plan only if the topic state still matches the plan.", { plan_id: str("Plan id") }, ["plan_id"], consequentialExecute],
-  ["verify_change", "Verify the result against the approved plan; returns SHA-256 evidence.", { plan_id: str("Plan id") }, ["plan_id"], readOnly],
+  ["verify_change", "Verify the result against the approved plan; returns SHA-256 evidence and writes an audit event.", { plan_id: str("Plan id") }, ["plan_id"], auditWrite],
 ].map(([name, description, properties, required, annotations]) => ({
   name,
   description,
