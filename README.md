@@ -81,8 +81,10 @@ The Worker serves `web/` as static assets and handles `/mcp` itself: stateless J
 - Not claimed: a completed connection inside the production Alexa+ app. The simulator stands in for Alexa+'s voice layer, which the track explicitly allows.
 - Not entered: the AWS Builder mini challenge. This build uses no AWS services.
 
-## Commercial boundary
+## Public clean-room boundary
 
-Clean-room code written during the hackathon. It contains no HERMX commercial control-plane source, credentials, customer data, private provider mappings or deployment secrets. See [SECURITY.md](SECURITY.md).
+This repository is a public clean-room demonstration of the ProofGate approval pattern for MCP workflows. It is not the commercial PBT-G control plane and does not include private browser or terminal enforcement internals, credentials, provider mappings, customer data, deployment secrets, private prompts, pricing logic or production runbooks.
+
+The repository is intended to show the approval-gated workflow pattern at a capability level: plan, exact approval, execute, verify and audit evidence. Commercial PBT-G implementation details remain outside this repository. See [SECURITY.md](SECURITY.md).
 
 The learning-coach half began as a separate prototype, [senih25/recall-alexa-mcp](https://github.com/senih25/recall-alexa-mcp), and was merged here so the submission is one product.
