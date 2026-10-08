@@ -13,25 +13,34 @@ const INSTRUCTIONS =
 const MAX_BODY = 16 * 1024;
 
 const str = (description) => ({ type: "string", description });
+const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+const routineEffect = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
+const consequentialPlan = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
+const consequentialExecute = { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: false };
+const auditWrite = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
+
 const TOOLS = [
-  ["proofgate_status", "Service status, safety contract, audit-chain head and state digest.", {}, []],
-  ["progress", "Spoken recap of cards, learned cards and cards due, per topic.", {}, []],
-  ["next_review", "Next due flashcard (optionally within one topic) to read aloud.", { topic: str("Optional topic slug") }, []],
+  ["proofgate_status", "Service status, safety contract, audit-chain head and state digest.", {}, [], readOnly],
+  ["progress", "Spoken recap of cards, learned cards and cards due, per topic.", {}, [], readOnly],
+  ["next_review", "Next due flashcard (optionally within one topic) to read aloud.", { topic: str("Optional topic slug") }, [], readOnly],
   ["grade_answer", "Routine effect: grade a spoken answer and reschedule the card (SM-2). Audited, not gated.",
-    { card_id: str("Card id from next_review"), answer: str("The learner's spoken answer") }, ["card_id", "answer"]],
+    { card_id: str("Card id from next_review"), answer: str("The learner's spoken answer") }, ["card_id", "answer"], routineEffect],
   ["plan_change", "Plan a consequential change without executing it. action: import_deck (needs source text), reset_topic, or delete_topic.",
     {
       action: { type: "string", enum: ["import_deck", "reset_topic", "delete_topic"] },
       topic: str('Lowercase slug, e.g. "kubernetes"'),
       source: str("Source text for import_deck"),
       reason: str("Why the change is requested"),
-    }, ["action", "topic"]],
+    }, ["action", "topic"], consequentialPlan],
   ["approve_change", 'Approve one exact plan with its plan-bound phrase, e.g. "APPROVE 7F3A9C".',
-    { plan_id: str("Plan id"), approval_phrase: str("Exact approval phrase") }, ["plan_id", "approval_phrase"]],
-  ["execute_change", "Execute an approved plan only if the topic state still matches the plan.", { plan_id: str("Plan id") }, ["plan_id"]],
-  ["verify_change", "Verify the result against the approved plan; returns SHA-256 evidence.", { plan_id: str("Plan id") }, ["plan_id"]],
-].map(([name, description, properties, required]) => ({
-  name, description, inputSchema: { type: "object", properties, required },
+    { plan_id: str("Plan id"), approval_phrase: str("Exact approval phrase") }, ["plan_id", "approval_phrase"], consequentialPlan],
+  ["execute_change", "Execute an approved plan only if the topic state still matches the plan.", { plan_id: str("Plan id") }, ["plan_id"], consequentialExecute],
+  ["verify_change", "Verify the result against the approved plan; returns SHA-256 evidence and writes an audit event.", { plan_id: str("Plan id") }, ["plan_id"], auditWrite],
+].map(([name, description, properties, required, annotations]) => ({
+  name,
+  description,
+  inputSchema: { type: "object", properties, required },
+  annotations,
 }));
 const TOOL_NAMES = new Set(TOOLS.map((t) => t.name));
 
