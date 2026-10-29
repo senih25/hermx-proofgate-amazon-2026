@@ -2,6 +2,8 @@
 
 **A voice study coach for Alexa+ where routine reviews run instantly and anything that changes a deck waits for your exact approval.**
 
+[![M8ven Score](https://m8ven.ai/badge/mcp/senih25-hermx-proofgate-amazon-2026-1isjez?v=9858cf0c9bd112cb231557e7f2fa3e05)](https://m8ven.ai/mcp/senih25-hermx-proofgate-amazon-2026-1isjez?s=readme)
+
 - **Live demo (free, no sign-in):** https://hermx-proofgate-recall.senih-bayankulu25.workers.dev
 - **Live MCP endpoint:** `https://hermx-proofgate-recall.senih-bayankulu25.workers.dev/mcp` (Streamable HTTP, protocol `2025-11-25`)
 - **Demo video (1:55):** https://youtu.be/nxf7_ZA5bQo
